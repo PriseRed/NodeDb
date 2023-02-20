@@ -1,24 +1,39 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const userScheme = newSchema({
+const userScheme = new Schema({
     name: String,
     age: Number
 });
 
-const User = mongoose.model("User", userScheme);
-const user = new User({ name: "Bill", age: 41});
+const User = mongoose.model("user", userScheme);
+
 
 async function main() {
-    // подключемся к базе данных
     await mongoose.connect("mongodb://127.0.0.1:27017/NodeDb");
      
-    // сохраняем модель user в базу данных
-    await user.save();
-    console.log("Сохранен объект", user);
+    // const user = new User({ name: "Carl", age: 15});
+    // await user.save();
+
+    // const user = await User.create({ name: "Xerxus", age: 163});
+
+    const Xerxus = await User.findOne({name: "Carl Smith"}).lean();
+    console.log(Xerxus);
+    // const result = await User.deleteMany({age:41});
+    // const result = await User.deleteOne({name:"Tom"})
+    // console.log(result);
+
+    // const result = await User.updateOne({name: "Tom"}, {name: "Tom Smith"})
+    
+    const result = await User.findByIdAndUpdate(Xerxus._id, {name: "Xerxus"});
+    // const user = await User.findOneAndUpdate({name: "Mike"}, {name: "Alex", age:24}, {new: true});
+
+    console.log(result);
+
+    // console.log("Сохранен объект", user);
  
     // отключаемся от базы данных
     await mongoose.disconnect();
 }
-// запускаем подключение и взаимодействие с базой данных
-main().catch(console.log);
+
+main().catch(console.log).finally(async()=>await mongoose.disconnect());
